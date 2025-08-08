@@ -151,6 +151,10 @@ function renderCardKV(kv){
 }
 function renderTrackCard(track){
   const wrap = el("div");
+
+  // Add image for this track
+  wrap.innerHTML = artTag('tracks', track["Track"]);
+
   const b = parseTrackBonus(track["Type Bonus"]);
   const badges = el("div");
   badges.innerHTML = `
@@ -166,8 +170,30 @@ function renderTrackCard(track){
   ]));
   return wrap;
 }
+
+// function renderTrackCard(track){
+//   const wrap = el("div");
+//   const b = parseTrackBonus(track["Type Bonus"]);
+//   const badges = el("div");
+//   badges.innerHTML = `
+//     <span class="badge">Type: ${track["Track Type"]}</span>
+//     <span class="badge">Total Laps: ${track["Total Laps"]}</span>
+//     <span class="badge">Bonus: ${b.amount} ${b.field ?? "-"}</span>`;
+//   wrap.appendChild(badges);
+//   wrap.appendChild(renderCardKV([
+//     ["Name", track["Track"]],
+//     ["Track Type", track["Track Type"]],
+//     ["Total Laps", track["Total Laps"]],
+//     ["Type Bonus", track["Type Bonus"] || "-"],
+//   ]));
+//   return wrap;
+// }
 function renderCarCard(car){
   const wrap = el("div");
+
+  // Add image for this car
+  wrap.innerHTML = artTag('cars', car["Car"]);
+
   const badges = el("div");
   badges.innerHTML = `<span class="badge">${car["Car"]}</span><span class="badge">Type: ${car["Track Type"]}</span>`;
   wrap.appendChild(badges);
@@ -176,6 +202,77 @@ function renderCarCard(car){
     ["Max Laps", car["Max Laps"]],
   ]));
   return wrap;
+}
+
+// function renderCarCard(car){
+//   const wrap = el("div");
+//   const badges = el("div");
+//   badges.innerHTML = `<span class="badge">${car["Car"]}</span><span class="badge">Type: ${car["Track Type"]}</span>`;
+//   wrap.appendChild(badges);
+//   wrap.appendChild(renderCardKV([
+//     ["Core Power", car["Core Power"]],
+//     ["Max Laps", car["Max Laps"]],
+//   ]));
+//   return wrap;
+// }
+
+function renderUpgradePicker(){
+  const sel = document.getElementById('upgradeSelect');
+  const wrap = document.getElementById('upgradePicker');
+  if (!sel || !wrap) return;
+
+  wrap.innerHTML = '';
+
+  Array.from(sel.options).forEach(opt => {
+    const value = opt.value;
+    const label = opt.textContent.trim();   // full label for the caption
+    let imgName = opt.dataset.upg || "";    // clean upgrade name for PNG
+
+    // Fallback: if no data-upg, try reading from state via index
+    if (!imgName && value !== "-1") {
+      const i = parseInt(value, 10);
+      const u = state.upgrades[i];
+      if (u) imgName = u["Upgrade"];
+    }
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pick';
+    btn.dataset.value = value;
+
+    // Only render an image for real upgrades (not "(No upgrade)")
+    const art = (value === "-1") ? "" : artTagPortrait('upgrades', imgName);
+    btn.innerHTML = `${art}<div class="label">${label}</div>`;
+
+    if (sel.value === value) btn.classList.add('selected');
+
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('disabled')) return;
+      sel.value = value;
+      syncUpgradePickerSelection();
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    wrap.appendChild(btn);
+  });
+}
+
+
+// Keep highlight in sync when selection changes programmatically
+function syncUpgradePickerSelection(){
+  const selVal = document.getElementById('upgradeSelect').value;
+  document.querySelectorAll('#upgradePicker .pick').forEach(p => {
+    p.classList.toggle('selected', p.dataset.value === selVal);
+  });
+}
+
+// Grey‑out cards that don’t match the current track
+function markUpgradeAvailability(checkFn){
+  // checkFn(value) should return true/false
+  document.querySelectorAll('#upgradePicker .pick').forEach(p => {
+    const ok = checkFn(p.dataset.value);
+    p.classList.toggle('disabled', !ok);
+  });
 }
 
 // table helper: allow row meta {cells:[], rowClass:""}
@@ -289,14 +386,28 @@ function renderRaceUI(){
     const opt=el("option");
     opt.value=String(idx);
     opt.textContent=`${u["Upgrade"]} — +CP ${u["Core Power"]}, +ML ${u["Max Laps"]} [${conditionLabel(u)}]`;
+    opt.dataset.upg = u["Upgrade"];
     upSel.appendChild(opt);
   });
+
+
+  renderUpgradePicker();                       // build the visual cards from the current <select>
+  upSel.onchange = () => syncUpgradePickerSelection();   // keep highlight in sync
+
+  // (optional) grey-out cards not active on this track
+  markUpgradeAvailability((val) => {
+    if (val === "-1") return true;                  // "(No upgrade)" stays selectable
+    const u = state.upgrades[parseInt(val, 10)];
+    return !!u && isUpgradeActiveOnTrack(u, track["Track Type"]);
+  });
+
 
   $("#useGreedyPickBtn").onclick=()=>{
     const best=pickBestUpgradeGreedy(player.car, track, state.upgrades, player.usedUpgrades);
     if(!best){ upSel.value="-1"; return; }
     const idx=state.upgrades.findIndex(u=>u["Upgrade"]===best["Upgrade"]);
     upSel.value=(idx>=0 && !player.usedUpgrades.has(best["Upgrade"])) ? String(idx) : "-1";
+    syncUpgradePickerSelection();
   };
 
   $("#simulateTrackBtn").onclick=()=>simulateTrack();
@@ -578,6 +689,28 @@ function escCloseOnce(e){
   if(e.key === "Escape"){
     document.getElementById("endModal")?.classList.remove("open");
   }
+}
+
+
+// Build path to the PNG in /card_images/<cars|tracks>/<Name>.png
+function artTag(kind, name){
+  const src = getCardImagePath(kind, name);
+  return `<div class="artwrap">
+            <img src="${src}" alt="${name} image"
+                 onerror="this.parentElement.style.display='none'">
+          </div>`;
+}
+
+function getCardImagePath(kind, name){
+  const safe = encodeURIComponent(String(name).trim());
+  return `card_images/${kind}/${safe}.png`;
+}
+function artTagPortrait(kind, name){
+  const src = getCardImagePath(kind, name);
+  return `<div class="artwrap portrait">
+            <img src="${src}" alt="${name}"
+                 onerror="this.parentElement.style.display='none'">
+          </div>`;
 }
 
 // ---------- boot ----------

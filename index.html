@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Overdr1ve – Browser Prototype</title>
+  <title>Overdr1ve – Prototype</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -47,6 +48,7 @@
           <button id="useGreedyPickBtn" class="btn secondary" type="button">Pick Best For Me</button>
           <button id="simulateTrackBtn" class="btn primary" type="button">Simulate This Track</button>
         </div>
+        <div id="upgradePicker" class="picker"></div>
         <small>
           Tip: Conditions come from <em>Track Type Condition</em> (or <em>Condition</em>) in
           <code>upgrades.csv</code>. Only active upgrades apply.
@@ -71,29 +73,27 @@
 
   <!-- End-of-race modal + charts -->
   <div id="endModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="endModalTitle">
-    <!-- <div class="modal-content"> -->
-    <div class="modal-content" tabindex="-1"></div>  
-      <h2 id="endModalTitle">🏁🎉 Congratulations, Race is finished!</h2>
+    <div class="modal-content" tabindex="-1">
+        <h2 id="endModalTitle">🏁🎉 Congratulations, Race is finished!</h2>
 
-      <div id="finalLeaderboard" class="panel" style="margin:12px 0;"></div>
+        <div id="finalLeaderboard" class="panel" style="margin:12px 0;"></div>
 
-      <div class="charts">
-        <div class="panel">
-          <h3>Finish Rate per Player</h3>
-          <div id="chartFinishRate"></div>
+        <div class="charts">
+          <div class="panel">
+            <h3>Finish Rate per Player</h3>
+            <div id="chartFinishRate"></div>
+          </div>
+          <div class="panel">
+            <h3>Average Effective CP by Player</h3>
+            <div id="chartCPByTrack"></div>
+          </div>
         </div>
-        <div class="panel">
-          <h3>Average Effective CP by Player</h3>
-          <div id="chartCPByTrack"></div>
-        </div>
-      </div>
 
-      <div class="row" style="justify-content:flex-end">
-        <button id="closeEndModal" class="btn" type="button">Close</button>
-      </div>
+        <div class="row" style="justify-content:flex-end">
+          <button id="closeEndModal" class="btn" type="button">Close</button>
+        </div>
     </div>
   </div>
-
   <!-- Confetti canvas -->
   <canvas id="confetti"></canvas>
 

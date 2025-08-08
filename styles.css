@@ -175,3 +175,68 @@ tr.you-row:hover{ background: rgba(106,209,255,.12); }
 
 /* Smooth bar growth */
 .barfill{ transition: width .35s ease; }
+
+/* === Card art area (horizontal) === */
+.artwrap{
+  width: 100%;
+  aspect-ratio: 1039 / 744;     /* ~1.396 — keeps the exact card proportions */
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel-2);
+  margin-bottom: 10px;
+  overflow: hidden;
+  display: grid;                /* lets us center the image nicely */
+  place-items: center;
+}
+
+.artwrap img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;          /* show the entire PNG without cropping */
+  display: block;
+}
+
+/* Portrait art for upgrades */
+.artwrap.portrait{
+  width:100%;
+  aspect-ratio: 744 / 1039;   /* vertical */
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--panel-2);
+  margin-bottom:8px;
+  overflow:hidden;
+  display:grid; place-items:center;
+}
+.artwrap.portrait img{
+  width:100%; height:100%;
+  object-fit: contain; display:block;
+}
+
+/* Grid of upgrade picks */
+.picker{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap:12px; margin-top:10px;
+}
+.pick{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:8px;
+  cursor:pointer;
+  transition: transform .06s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.pick:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.pick:hover{ transform: translateY(-1px); }
+.pick.selected{
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(106,209,255,.35), 0 6px 14px rgba(0,0,0,.35);
+}
+.pick.disabled{
+  opacity:.45; filter:grayscale(.3); cursor:not-allowed;
+}
+.pick .label{
+  font-size:12px; color:var(--muted); text-align:center; margin-top:4px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+
