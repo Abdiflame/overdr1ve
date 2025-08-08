@@ -37,17 +37,23 @@
           <div id="playerCard" class="cardBody small"></div>
         </div>
       </div>
-
+      
       <div class="panel">
         <h3>Pick Upgrade For This Track</h3>
-        <div class="row">
+
+        <div class="row controls">
           <select id="upgradeSelect"></select>
-          <label for="autoPickTrack">
-            <input id="autoPickTrack" type="checkbox" /> Auto-pick best for this track
+
+          <label class="control-row">
+            <input type="checkbox" id="autoPick" />
+            <span class="label label--long">Auto-pick best for this track</span>
+            <span class="label label--short" aria-hidden="true">Auto-pick</span>
           </label>
+
           <button id="useGreedyPickBtn" class="btn secondary" type="button">Pick Best For Me</button>
           <button id="simulateTrackBtn" class="btn primary" type="button">Simulate This Track</button>
         </div>
+
         <div id="upgradePicker" class="picker"></div>
         <small>
           Tip: Conditions come from <em>Track Type Condition</em> (or <em>Condition</em>) in
