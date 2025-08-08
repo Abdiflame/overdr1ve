@@ -1,0 +1,13 @@
+Car,Core Power,Max Laps,Track Type
+Car 01,300,50,Sunny
+Car 02,320,40,Sunny
+Car 03,300,50,Night
+Car 04,320,40,Night
+Car 05,300,50,Rainy
+Car 06,320,40,Rainy
+Car 07,300,50,Twisty
+Car 08,320,40,Twisty
+Car 09,320,50,-
+Car 10,300,60,-
+Car 11,300,40,Sunny/Night
+Car 12,280,50,Rainy/Twisty

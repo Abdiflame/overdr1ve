@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Overdr1ve – Browser Prototype</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Overdr1ve (Prototype)</div>
+    <div class="right">
+      <button id="resetBtn" class="btn secondary" type="button">Reset</button>
+      <button id="simulateAllBtn" class="btn" type="button">Simulate All 5 Tracks</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="setupSection" class="panel">
+      <h2>Choose Your Car</h2>
+      <div class="row">
+        <label for="carSelect">Car:</label>
+        <select id="carSelect"></select>
+      </div>
+      <button id="startBtn" class="btn primary" type="button">Start Race (5 Tracks)</button>
+    </section>
+
+    <section id="raceSection" class="panel hidden">
+      <div class="grid two">
+        <div class="card">
+          <h3>Current Track</h3>
+          <div id="trackCard" class="cardBody small"></div>
+        </div>
+        <div class="card">
+          <h3>Your Car</h3>
+          <div id="playerCard" class="cardBody small"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Pick Upgrade For This Track</h3>
+        <div class="row">
+          <select id="upgradeSelect"></select>
+          <label for="autoPickTrack">
+            <input id="autoPickTrack" type="checkbox" /> Auto-pick best for this track
+          </label>
+          <button id="useGreedyPickBtn" class="btn secondary" type="button">Pick Best For Me</button>
+          <button id="simulateTrackBtn" class="btn primary" type="button">Simulate This Track</button>
+        </div>
+        <small>
+          Tip: Conditions come from <em>Track Type Condition</em> (or <em>Condition</em>) in
+          <code>upgrades.csv</code>. Only active upgrades apply.
+        </small>
+      </div>
+
+      <section class="panel">
+        <h3>Track Results</h3>
+        <div id="trackResults"></div>
+      </section>
+
+      <section class="panel">
+        <h3>Championship Standings (After Each Track)</h3>
+        <div id="standings"></div>
+      </section>
+    </section>
+
+    <footer class="footnote">
+      CSVs are autoloaded from <code>./data_csv/</code>. This is a minimal proxy UI with simple card visuals.
+    </footer>
+  </main>
+
+  <!-- End-of-race modal + charts -->
+  <div id="endModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="endModalTitle">
+    <!-- <div class="modal-content"> -->
+    <div class="modal-content" tabindex="-1"></div>  
+      <h2 id="endModalTitle">🏁🎉 Congratulations, Race is finished!</h2>
+
+      <div id="finalLeaderboard" class="panel" style="margin:12px 0;"></div>
+
+      <div class="charts">
+        <div class="panel">
+          <h3>Finish Rate per Player</h3>
+          <div id="chartFinishRate"></div>
+        </div>
+        <div class="panel">
+          <h3>Average Effective CP by Player</h3>
+          <div id="chartCPByTrack"></div>
+        </div>
+      </div>
+
+      <div class="row" style="justify-content:flex-end">
+        <button id="closeEndModal" class="btn" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti canvas -->
+  <canvas id="confetti"></canvas>
+
+  <!-- <script src="app.js?v=8"></script> -->
+   <script src="app.js?v=8" defer></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+/* ===== Theme Vars ===== */
+:root{
+  --bg:#0b0c10;
+  --panel:#121419;
+  --panel-2:#1b1e25;
+  --card:#0f1116;
+  --border:#2a2f3a;
+
+  --text:#e8e8ea;
+  --muted:#a8acb3;
+
+  --accent:#6ad1ff;
+  --accent-2:#ffb36a;
+
+  --good:#4caf50;
+  --bad:#e74c3c;
+}
+
+/* ===== Base / Reset ===== */
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+.hidden{ display:none !important; }
+
+/* ===== Topbar ===== */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 16px;
+  background:var(--panel);
+  border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:10;
+}
+.brand{ font-weight:700; letter-spacing:.5px; }
+
+/* ===== Buttons ===== */
+.btn{
+  background:var(--accent); color:#001018;
+  border:none; padding:8px 12px; border-radius:8px;
+  cursor:pointer; font-weight:600;
+  transition:filter .15s ease, transform .02s ease;
+}
+.btn.primary{ background:var(--accent); }
+.btn.secondary{ background:var(--accent-2); }
+.btn:hover{ filter:brightness(1.07); }
+.btn:active{ transform:translateY(1px); }
+.btn:disabled{ opacity:.6; cursor:not-allowed; }
+.btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+/* ===== Layout ===== */
+.container{ max-width:1100px; margin:24px auto; padding:0 16px; }
+.panel{
+  background:var(--panel); border:1px solid var(--border);
+  border-radius:12px; padding:16px; margin-bottom:16px;
+}
+.grid.two{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+
+/* ===== Cards ===== */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px;
+}
+.cardBody.small{ font-size:14px; }
+
+/* ===== Rows / Badges / Key-Value ===== */
+.row{ display:flex; align-items:center; gap:12px; margin:8px 0; }
+.badge{
+  display:inline-block; padding:2px 8px; border-radius:999px;
+  font-size:12px; background:var(--panel-2);
+  border:1px solid var(--border); color:var(--muted);
+  margin-right:6px;
+}
+.kv{
+  display:grid; grid-template-columns:140px 1fr;
+  gap:8px; margin:8px 0;
+}
+.kv div{ padding:2px 0; }
+
+/* ===== Tables ===== */
+table{ width:100%; border-collapse:collapse; font-size:14px; }
+th,td{ border-bottom:1px solid var(--border); padding:8px; text-align:left; }
+th{ color:var(--muted); font-weight:600; }
+tr:hover{ background:rgba(255,255,255,0.02); }
+
+.dnf{ color:var(--bad); font-weight:700; }
+.ok{ color:var(--good); font-weight:700; }
+
+.footnote{ color:var(--muted); text-align:center; margin:24px 0 40px; }
+
+/* Highlight "You" rows in any table */
+.you-row{
+  background: rgba(106,209,255,.08);
+  box-shadow: inset 0 0 0 1px rgba(106,209,255,.35);
+}
+
+/* ===== End-of-race Modal ===== */
+.modal{
+  position:fixed; inset:0; display:none; place-items:center;
+  background:rgba(0,0,0,.6); z-index:100;
+  backdrop-filter:blur(2px);
+}
+.modal.open{ display:grid; }
+.modal-content{
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:20px; border-radius:14px;
+  width:min(960px,92vw);
+  max-height:90vh; overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+  animation:pop .35s ease;
+}
+@keyframes pop{
+  from{ transform:scale(.95); opacity:0; }
+  to  { transform:scale(1);   opacity:1; }
+}
+
+/* Confetti canvas sits on top but doesn't block clicks */
+#confetti{
+  position:fixed; inset:0; pointer-events:none; display:none;
+  z-index:9999;
+}
+
+/* ===== Simple Bar Charts ===== */
+.barwrap{ display:flex; flex-direction:column; gap:6px; }
+.barrow{
+  display:grid; grid-template-columns:160px 1fr 60px;
+  gap:8px; align-items:center;
+}
+.barlabel{ color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.bar{
+  background:var(--panel-2); border:1px solid var(--border);
+  height:12px; border-radius:999px; overflow:hidden;
+}
+.barfill{ height:100%; background:var(--accent); }
+.barvalue{ justify-self:end; color:var(--muted); }
+
+/* Charts layout */
+.charts{ display:grid; grid-template-columns:1fr; gap:16px; }
+@media (min-width:900px){
+  .charts{ grid-template-columns:1fr 1fr; }
+}
+
+/* ===== Accessibility / Motion ===== */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration:0.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.01ms !important;
+  }
+  .modal-content{ animation:none; }
+}
+
+/* Used by renderCardKV() */
+.muted{ color: var(--muted); }
+
+/* Space the header buttons */
+.topbar .right{ display:flex; gap:8px; align-items:center; }
+
+/* Keep "You" highlight even on hover */
+tr.you-row:hover{ background: rgba(106,209,255,.12); }
+
+/* Stack the two-column grid on small screens */
+@media (max-width: 720px){
+  .grid.two{ grid-template-columns: 1fr; }
+}
+
+/* Smooth bar growth */
+.barfill{ transition: width .35s ease; }
