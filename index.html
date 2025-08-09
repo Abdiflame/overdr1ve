@@ -12,20 +12,43 @@
     <div class="brand">Overdr1ve (Prototype)</div>
     <div class="right">
       <button id="resetBtn" class="btn secondary" type="button">Reset</button>
-      <button id="simulateAllBtn" class="btn" type="button">Simulate All 5 Tracks</button>
+      <!-- unique ID so it doesn't collide with the race panel button -->
+      <button id="simulateAllTopBtn" class="btn" type="button">Simulate All 5 Tracks</button>
     </div>
   </header>
 
   <main class="container">
+    <!-- ===== SETUP ===== -->
     <section id="setupSection" class="panel">
+      <h2 style="text-align:center;">Enter Your Name</h2>
+      <div style="text-align:center; margin-bottom:15px;">
+        <input
+          id="playerNameInput"
+          type="text"
+          placeholder="Player Name"
+          style="padding:6px 10px; font-size:16px; width:220px; text-align:center;"
+        />
+      </div>
+
+      <!-- Big centered start button -->
+      <button id="startBtn" class="btn primary" type="button">Start Race (5 Tracks)</button>
+
       <h2>Choose Your Car</h2>
       <div class="row">
         <label for="carSelect">Car:</label>
         <select id="carSelect"></select>
       </div>
-      <button id="startBtn" class="btn primary" type="button">Start Race (5 Tracks)</button>
+
+      <!-- Car grid selector -->
+      <div id="carPicker" class="picker"></div>
+
+      <!-- Preview area populated by updateCarPreviewByIndex() -->
+      <div id="carPreview" class="card" style="margin-top:10px;"></div>
+
+      
     </section>
 
+    <!-- ===== RACE ===== -->
     <section id="raceSection" class="panel hidden">
       <div class="grid two">
         <div class="card">
@@ -37,21 +60,25 @@
           <div id="playerCard" class="cardBody small"></div>
         </div>
       </div>
-      
+
       <div class="panel">
         <h3>Pick Upgrade For This Track</h3>
 
         <div class="row controls">
           <select id="upgradeSelect"></select>
 
-          <label class="control-row">
-            <input type="checkbox" id="autoPick" />
+          <!-- ID must match what simulateTrack() reads -->
+          <label class="control-row" for="autoPickTrack">
+            <input type="checkbox" id="autoPickTrack" />
             <span class="label label--long">Auto-pick best for this track</span>
             <span class="label label--short" aria-hidden="true">Auto-pick</span>
           </label>
 
           <button id="useGreedyPickBtn" class="btn secondary" type="button">Pick Best For Me</button>
           <button id="simulateTrackBtn" class="btn primary" type="button">Simulate This Track</button>
+
+          <!-- this stays for convenience; different from the topbar one -->
+          <button id="simulateAllBtn" class="btn" type="button">Simulate All 5 Tracks</button>
         </div>
 
         <div id="upgradePicker" class="picker"></div>
@@ -73,37 +100,38 @@
     </section>
 
     <footer class="footnote">
-      CSVs are autoloaded from <code>./data_csv/</code>. This is a minimal proxy UI with simple card visuals.
+      🎮 This game is a work in progress by Luis Fraga (Abdiflame) — minimal digital proxy UI for testing & showcasing! 🚀
     </footer>
   </main>
 
-  <!-- End-of-race modal + charts -->
+  <!-- ===== End-of-race modal + charts ===== -->
   <div id="endModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="endModalTitle">
     <div class="modal-content" tabindex="-1">
-        <h2 id="endModalTitle">🏁🎉 Congratulations, Race is finished!</h2>
+      <h2 id="endModalTitle">🏁🎉 Congratulations, Race is finished!</h2>
 
-        <div id="finalLeaderboard" class="panel" style="margin:12px 0;"></div>
+      <div id="finalLeaderboard" class="panel" style="margin:12px 0;"></div>
 
-        <div class="charts">
-          <div class="panel">
-            <h3>Finish Rate per Player</h3>
-            <div id="chartFinishRate"></div>
-          </div>
-          <div class="panel">
-            <h3>Average Effective CP by Player</h3>
-            <div id="chartCPByTrack"></div>
-          </div>
+      <div class="charts">
+        <div class="panel">
+          <h3>Finish Rate per Player</h3>
+          <div id="chartFinishRate"></div>
         </div>
-
-        <div class="row" style="justify-content:flex-end">
-          <button id="closeEndModal" class="btn" type="button">Close</button>
+        <div class="panel">
+          <h3>Average Effective CP by Player</h3>
+          <div id="chartCPByTrack"></div>
         </div>
+      </div>
+
+      <div class="row" style="justify-content:flex-end">
+        <button id="closeEndModal" class="btn" type="button">Close</button>
+      </div>
     </div>
   </div>
+
   <!-- Confetti canvas -->
   <canvas id="confetti"></canvas>
 
-  <!-- <script src="app.js?v=8"></script> -->
-   <script src="app.js?v=8" defer></script>
+  <!-- JS -->
+  <script src="app.js?v=9" defer></script>
 </body>
 </html>

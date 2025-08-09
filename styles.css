@@ -14,6 +14,9 @@
 
   --good:#4caf50;
   --bad:#e74c3c;
+
+  /* car grid control */
+  --car-tile-width: 240px; /* tweak me to change tile size */
 }
 
 /* ===== Base / Reset ===== */
@@ -27,7 +30,6 @@ body{
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
 }
-
 .hidden{ display:none !important; }
 
 /* ===== Topbar ===== */
@@ -47,7 +49,7 @@ body{
   border:none; padding:8px 12px; border-radius:8px;
   cursor:pointer; font-weight:600;
   transition:filter .15s ease, transform .02s ease;
-  white-space:nowrap;             /* never break button text */
+  white-space:nowrap;
 }
 .btn.primary{ background:var(--accent); }
 .btn.secondary{ background:var(--accent-2); }
@@ -61,9 +63,54 @@ body{
 .panel{
   background:var(--panel); border:1px solid var(--border);
   border-radius:12px; padding:16px; margin-bottom:16px;
-  min-width:0; /* allow shrinking on small viewports */
+  min-width:0;
 }
 .grid.two{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+
+/* Big centered start button */
+#startBtn{
+  display:block;
+  margin:16px auto;
+  padding:14px 20px;
+  font-size:18px;
+  min-width:220px;
+}
+
+/* ===== Car grid: 4→3→2 columns ===== */
+#carPicker{
+  display:grid;
+  grid-template-columns: repeat(4, var(--car-tile-width));
+  gap:12px;
+  justify-content:center;
+  margin-top:10px;
+}
+@media (max-width:1100px){
+  #carPicker{ grid-template-columns: repeat(3, var(--car-tile-width)); }
+}
+@media (max-width:720px){
+  #carPicker{ grid-template-columns: repeat(2, var(--car-tile-width)); }
+}
+/* grid tiles */
+#carPicker .pick{ padding:6px; }
+#carPicker .pick .artwrap{
+  aspect-ratio:1039/744;
+  border-radius:10px;
+}
+#carPicker .pick .label{
+  font-size:12px; text-align:center; margin-top:4px; color:var(--muted);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+
+/* === Preview Car (below grid) === */
+#carPreview{
+  max-width:80%;
+  margin:10px auto;
+}
+#carPreview .artwrap{
+  aspect-ratio:1039/744;
+  border-radius:10px;
+}
+#carPreview img{ width:100%; height:auto; display:block; }
 
 /* ===== Cards ===== */
 .card{
@@ -71,211 +118,103 @@ body{
   border:1px solid var(--border);
   border-radius:12px;
   padding:12px;
-  min-width:0; /* allow shrink */
+  min-width:0;
 }
 .cardBody.small{ font-size:14px; }
 
 /* ===== Rows / Badges / Key-Value ===== */
-.row{
-  display:flex; align-items:center; gap:12px; margin:8px 0;
-  flex-wrap:wrap;                  /* wrap on small screens */
-  min-width:0;
-}
+.row{ display:flex; align-items:center; gap:12px; margin:8px 0; flex-wrap:wrap; min-width:0; }
 .badge{
   display:inline-block; padding:2px 8px; border-radius:999px;
   font-size:12px; background:var(--panel-2);
   border:1px solid var(--border); color:var(--muted);
   margin-right:6px;
 }
-.kv{
-  display:grid; grid-template-columns:140px 1fr;
-  gap:8px; margin:8px 0;
-}
+.kv{ display:grid; grid-template-columns:140px 1fr; gap:8px; margin:8px 0; }
 .kv div{ padding:2px 0; }
 
-/* Checkbox + label combo that swaps text on mobile */
-.control-row{
-  display:flex; align-items:center; gap:8px;
-  white-space:normal;              /* allow word-level wraps */
-}
-.label{ white-space:nowrap; }      /* default: labels don’t break */
-.label--long{ display:inline; }    /* desktop text */
-.label--short{ display:none; }     /* mobile text */
+/* Checkbox + label combo */
+.control-row{ display:flex; align-items:center; gap:8px; white-space:normal; }
+.label{ white-space:nowrap; }
+.label--long{ display:inline; }
+.label--short{ display:none; }
 
 /* ===== Tables ===== */
 table{ width:100%; border-collapse:collapse; font-size:14px; }
 th,td{ border-bottom:1px solid var(--border); padding:8px; text-align:left; }
 th{ color:var(--muted); font-weight:600; }
 tr:hover{ background:rgba(255,255,255,0.02); }
-
 .dnf{ color:var(--bad); font-weight:700; }
 .ok{ color:var(--good); font-weight:700; }
 
 .footnote{ color:var(--muted); text-align:center; margin:24px 0 40px; }
 
-/* Highlight "You" rows in any table */
-.you-row{
-  background: rgba(106,209,255,.08);
-  box-shadow: inset 0 0 0 1px rgba(106,209,255,.35);
-}
+/* Highlight "You" rows */
+.you-row{ background: rgba(106,209,255,.08); box-shadow: inset 0 0 0 1px rgba(106,209,255,.35); }
 tr.you-row:hover{ background: rgba(106,209,255,.12); }
 
 /* ===== End-of-race Modal ===== */
-.modal{
-  position:fixed; inset:0; display:none; place-items:center;
-  background:rgba(0,0,0,.6); z-index:100;
-  backdrop-filter:blur(2px);
-}
+.modal{ position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.6); z-index:100; backdrop-filter:blur(2px); }
 .modal.open{ display:grid; }
 .modal-content{
-  background:var(--panel);
-  border:1px solid var(--border);
-  padding:20px; border-radius:14px;
-  width:min(960px,92vw);
-  max-height:90vh; overflow-y:auto;
-  box-shadow:0 20px 60px rgba(0,0,0,.5);
+  background:var(--panel); border:1px solid var(--border);
+  padding:20px; border-radius:14px; width:min(960px,92vw);
+  max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.5);
   animation:pop .35s ease;
 }
-@keyframes pop{
-  from{ transform:scale(.95); opacity:0; }
-  to  { transform:scale(1);   opacity:1; }
-}
+@keyframes pop{ from{ transform:scale(.95); opacity:0; } to{ transform:scale(1); opacity:1; } }
 
-/* Confetti canvas sits on top but doesn't block clicks */
-#confetti{
-  position:fixed; inset:0; pointer-events:none; display:none;
-  z-index:9999;
-}
+/* Confetti canvas */
+#confetti{ position:fixed; inset:0; pointer-events:none; display:none; z-index:9999; }
 
 /* ===== Simple Bar Charts ===== */
 .barwrap{ display:flex; flex-direction:column; gap:6px; }
-.barrow{
-  display:grid; grid-template-columns:160px 1fr 60px;
-  gap:8px; align-items:center;
-}
+.barrow{ display:grid; grid-template-columns:160px 1fr 60px; gap:8px; align-items:center; }
 .barlabel{ color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.bar{
-  background:var(--panel-2); border:1px solid var(--border);
-  height:12px; border-radius:999px; overflow:hidden;
-}
+.bar{ background:var(--panel-2); border:1px solid var(--border); height:12px; border-radius:999px; overflow:hidden; }
 .barfill{ height:100%; background:var(--accent); transition: width .35s ease; }
 .barvalue{ justify-self:end; color:var(--muted); }
 
 /* Charts layout */
 .charts{ display:grid; grid-template-columns:1fr; gap:16px; }
-@media (min-width:900px){
-  .charts{ grid-template-columns:1fr 1fr; }
-}
+@media (min-width:900px){ .charts{ grid-template-columns:1fr 1fr; } }
 
 /* ===== Card art area (horizontal) ===== */
 .artwrap{
-  width:100%;
-  aspect-ratio:1039 / 744;        /* ~1.396 — exact card proportions */
-  border:1px solid var(--border);
-  border-radius:12px;
-  background:var(--panel-2);
-  margin-bottom:10px;
-  overflow:hidden;
-  display:grid; place-items:center;
+  width:100%; aspect-ratio:1039/744; border:1px solid var(--border);
+  border-radius:12px; background:var(--panel-2); margin-bottom:10px;
+  overflow:hidden; display:grid; place-items:center;
 }
-.artwrap img{
-  width:100%; height:100%;
-  object-fit:contain; display:block;
-}
+.artwrap img{ width:100%; height:100%; object-fit:contain; display:block; }
 
 /* Portrait art for upgrades */
 .artwrap.portrait{
-  width:100%;
-  aspect-ratio:744 / 1039;        /* vertical */
-  border:1px solid var(--border);
-  border-radius:12px;
-  background:var(--panel-2);
-  margin-bottom:8px;
-  overflow:hidden;
-  display:grid; place-items:center;
+  width:100%; aspect-ratio:744/1039; border:1px solid var(--border);
+  border-radius:12px; background:var(--panel-2); margin-bottom:8px;
+  overflow:hidden; display:grid; place-items:center;
 }
-.artwrap.portrait img{
-  width:100%; height:100%;
-  object-fit:contain; display:block;
-}
+.artwrap.portrait img{ width:100%; height:100%; object-fit:contain; display:block; }
 
 /* Grid of upgrade picks */
-.picker{
-  display:grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap:12px; margin-top:10px;
-}
+.picker{ display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:12px; margin-top:10px; }
 .pick{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:8px;
-  cursor:pointer;
+  background:var(--card); border:1px solid var(--border); border-radius:12px;
+  padding:8px; cursor:pointer;
   transition: transform .06s ease, box-shadow .15s ease, border-color .15s ease;
 }
 .pick:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 .pick:hover{ transform: translateY(-1px); }
-.pick.selected{
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px rgba(106,209,255,.35), 0 6px 14px rgba(0,0,0,.35);
-}
-.pick.disabled{
-  opacity:.45; filter:grayscale(.3); cursor:not-allowed;
-}
-.pick .label{
-  font-size:12px; color:var(--muted); text-align:center; margin-top:4px;
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-}
+.pick.selected{ border-color: var(--accent); box-shadow: 0 0 0 1px rgba(106,209,255,.35), 0 6px 14px rgba(0,0,0,.35); }
+.pick.disabled{ opacity:.45; filter:grayscale(.3); cursor:not-allowed; }
+.pick .label{ font-size:12px; color:var(--muted); text-align:center; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
-/* ===== Accessibility / Motion ===== */
-@media (prefers-reduced-motion: reduce){
-  *, *::before, *::after{
-    animation-duration:0.01ms !important;
-    animation-iteration-count:1 !important;
-    transition-duration:0.01ms !important;
-  }
-  .modal-content{ animation:none; }
-}
-
-/* ===== Responsive Layout Tweaks ===== */
-
-/* Stack the two-column grid on small screens */
-@media (max-width: 720px){
-  .grid.two{ grid-template-columns: 1fr; }
-}
-
-/* Tablet stack helper; keep spacing */
-@media (max-width: 1024px){
-  /* no-op now, reserved if you introduce another grid later */
-}
-
-/* Mobile: simplify & make touch-friendly */
+/* ===== Responsive tweaks ===== */
+@media (max-width: 720px){ .grid.two{ grid-template-columns:1fr; } }
 @media (max-width: 640px){
-  /* Full‑width blocks */
   .panel, .card { width:100%; }
-
-  /* Turn the action row into a tidy grid */
-  .row.controls{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:8px;
-    align-items:center;
-  }
-
-  /* Swap long → short label */
+  .row.controls{ display:grid; grid-template-columns: 1fr 1fr; gap:8px; align-items:center; }
   .label--long{ display:none; }
   .label--short{ display:inline; }
-
-  /* Buttons scale down and are easy to tap */
-  .btn{
-    font-size: clamp(12px, 3.5vw, 14px);
-    padding:10px 12px;
-    width:100%;
-  }
-
-  /* Keep stats readable */
-  .stat-value{ font-size: clamp(14px, 4vw, 18px); }
-
-  /* Images never overflow */
+  .btn{ font-size: clamp(12px, 3.5vw, 14px); padding:10px 12px; width:100%; }
   .card img{ max-width:100%; height:auto; display:block; }
 }
