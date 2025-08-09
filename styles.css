@@ -84,12 +84,27 @@ body{
   justify-content:center;
   margin-top:10px;
 }
+/* responsive breakpoints unchanged */
 @media (max-width:1100px){
   #carPicker{ grid-template-columns: repeat(3, var(--car-tile-width)); }
 }
 @media (max-width:720px){
   #carPicker{ grid-template-columns: repeat(2, var(--car-tile-width)); }
 }
+/* 
+#carPicker{
+  display:grid;
+  grid-template-columns: repeat(4, var(--car-tile-width));
+  gap:12px;
+  justify-content:center;
+  margin-top:10px;
+}
+@media (max-width:1100px){
+  #carPicker{ grid-template-columns: repeat(3, var(--car-tile-width)); }
+}
+@media (max-width:720px){
+  #carPicker{ grid-template-columns: repeat(2, var(--car-tile-width)); }
+} */
 /* grid tiles */
 #carPicker .pick{ padding:6px; }
 #carPicker .pick .artwrap{

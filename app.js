@@ -1,5 +1,7 @@
-// Overdr1ve — Browser Prototype (refactored)
-const POINTS = [25,18,15,12,10,8,6,4];
+// Overdr1ve — Browser Prototype (8-cars / 8-tracks)
+const NUM_CARS   = 8;
+const NUM_TRACKS = 8;
+const POINTS = [25,18,15,12,10,8,6,4]; // 8-player scoring
 let playerDisplayName = "You"; // set from #playerNameInput on start
 
 // ---------- DOM utils ----------
@@ -309,13 +311,13 @@ async function loadData(){
   for(const t of tracks){ t["Total Laps"]=toInt(t["Total Laps"]); }
   for(const u of upgrades){ u["Core Power"]=toInt(u["Core Power"]); u["Max Laps"]=toInt(u["Max Laps"]); }
 
-  state.cars = cars;
-  state.allTracks = tracks;
-  state.upgrades = upgrades;
+  state.cars = cars.slice(0, NUM_CARS);
+  state.allTracks = tracks.slice(0, Math.max(NUM_TRACKS, 1));
+  state.upgrades = upgrades.slice(0, NUM_TRACKS); // single-use per track (8)
 
   // Dev helpers
-  window._dbgUpgrades = upgrades;
-  window._dbgAllTracks = tracks;
+  window._dbgUpgrades = state.upgrades;
+  window._dbgAllTracks = state.allTracks;
 }
 
 // ---------- Setup UI ----------
@@ -366,11 +368,14 @@ function initSetupUI(){
 function startRace(playerCarIndex){
   if (typeof playerCarIndex !== "number") playerCarIndex = 0;
 
-  state.tracks = pickRandom(state.allTracks, 5);
+  state.tracks = pickRandom(state.allTracks, NUM_TRACKS);
+
   const pool=[...state.cars];
-  const playerCar=pool[playerCarIndex];
-  pool.splice(playerCarIndex,1);
-  const botCars = pool.slice(0, Math.min(7, pool.length));
+  const playerCar=pool[playerCarIndex] ?? pool[0];
+  const playerIndex = pool.indexOf(playerCar);
+  if (playerIndex >= 0) pool.splice(playerIndex,1);
+
+  const botCars = pool.slice(0, Math.min(NUM_CARS-1, pool.length));
 
   state.players=[
     {id:1,name:playerDisplayName,isHuman:true,car:playerCar,points:0,wins:0,finishes:0,usedUpgrades:new Set()},

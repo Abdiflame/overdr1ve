@@ -2,9 +2,8 @@ Upgrade,Core Power,Max Laps,Track Type Condition
 Upgrade 01,20,0,-
 Upgrade 02,0,20,-
 Upgrade 03,10,10,-
-Upgrade 04,20,10,Sunny/Night
-Upgrade 05,10,20,Rainy/Twisty
-Upgrade 06,20,20,Sunny
-Upgrade 07,20,20,Night
-Upgrade 08,30,10,Rainy
-Upgrade 09,10,30,Twisty
+Upgrade 04,30,-10,-
+Upgrade 05,20,20,Sunny
+Upgrade 06,20,20,Night
+Upgrade 07,30,10,Rainy
+Upgrade 08,10,30,Twisty

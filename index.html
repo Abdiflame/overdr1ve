@@ -13,7 +13,7 @@
     <div class="right">
       <button id="resetBtn" class="btn secondary" type="button">Reset</button>
       <!-- unique ID so it doesn't collide with the race panel button -->
-      <button id="simulateAllTopBtn" class="btn" type="button">Simulate All 5 Tracks</button>
+      <button id="simulateAllTopBtn" class="btn" type="button">Simulate All 8 Tracks</button>
     </div>
   </header>
 
@@ -31,7 +31,7 @@
       </div>
 
       <!-- Big centered start button -->
-      <button id="startBtn" class="btn primary" type="button">Start Race (5 Tracks)</button>
+      <button id="startBtn" class="btn primary" type="button">Start Race (8 Tracks)</button>
 
       <h2>Choose Your Car</h2>
       <div class="row">
@@ -39,13 +39,11 @@
         <select id="carSelect"></select>
       </div>
 
-      <!-- Car grid selector -->
+      <!-- Car grid selector (2 rows × 4 cols when 8 cars) -->
       <div id="carPicker" class="picker"></div>
 
       <!-- Preview area populated by updateCarPreviewByIndex() -->
       <div id="carPreview" class="card" style="margin-top:10px;"></div>
-
-      
     </section>
 
     <!-- ===== RACE ===== -->
@@ -78,7 +76,7 @@
           <button id="simulateTrackBtn" class="btn primary" type="button">Simulate This Track</button>
 
           <!-- this stays for convenience; different from the topbar one -->
-          <button id="simulateAllBtn" class="btn" type="button">Simulate All 5 Tracks</button>
+          <button id="simulateAllBtn" class="btn" type="button">Simulate All 8 Tracks</button>
         </div>
 
         <div id="upgradePicker" class="picker"></div>
@@ -132,6 +130,6 @@
   <canvas id="confetti"></canvas>
 
   <!-- JS -->
-  <script src="app.js?v=9" defer></script>
+  <script src="app.js?v=10" defer></script>
 </body>
 </html>
